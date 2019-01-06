@@ -1,0 +1,3 @@
+[submodule "deps/qdt"]
+	path = deps/qdt
+	url = https://github.com/ispras/qdt.git
