@@ -1,4 +1,8 @@
-import storage_names
+__all__ = [
+    "Storage"
+]
+
+import androidsync
 
 
 class Storage(object):
@@ -18,7 +22,7 @@ class Storage(object):
     @classmethod
     def load(cls, file):
         namespace = {"Storage": cls}
-        namespace.update(storage_names.__dict__)
+        namespace.update(androidsync.__dict__)
         result = {}
         try:
             with open(file, "r") as f:

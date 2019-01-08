@@ -1,3 +1,7 @@
+__all__ = [
+    "Client"
+]
+
 from common import (
     make_python_identifier
 )
