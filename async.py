@@ -26,7 +26,8 @@ if __name__ == "__main__":
     port = find_free_port()
 
     ss = socket(AF_INET, SOCK_STREAM)
-    ss.bind(("127.0.0.1", port))
+    # ss.bind(("127.0.0.1", port)) # accept from localhost only
+    ss.bind(("", port)) # listen an all ports
 
     working = True
 
