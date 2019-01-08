@@ -11,6 +11,9 @@ from socket import (
 from session import (
     Session
 )
+from client import (
+    Client
+)
 
 import sys
 
@@ -20,8 +23,25 @@ from pyrsp.utils import (
     find_free_port
 )
 
+
+class Server(object):
+
+    def __init__(self):
+        self._clients = {}
+
+    def get_client(self, _id):
+        try:
+            client = self._clients[_id]
+        except KeyError:
+            client = Client(_id)
+            self._clients[_id] = client
+        return client
+
+
 if __name__ == "__main__":
     print("ASync PC (server) application")
+
+    srv = Server()
 
     port = find_free_port()
 
@@ -36,7 +56,7 @@ if __name__ == "__main__":
         print("Listening %s" % port)
         cs, remote = ss.accept()
         print("Connection from %s:%u" % remote)
-        s = Session(cs)
+        s = Session(cs, srv)
 
         s.run();
 

@@ -1,15 +1,13 @@
 from sms import (
     SMS
 )
-from client import (
-    Client
-)
+
 
 class Session(object):
 
-    def __init__(self, sock):
+    def __init__(self, sock, server):
         self._s = sock;
-        self._clients = {}
+        self._server = server
         # self._current_client = None # it's better to raise AttributeError
 
     def send(self, p):
@@ -52,12 +50,7 @@ class Session(object):
             elif b == ord("I"):
                 _id = p[1:-1].decode("utf-8")
                 self.sendnl(b"i")
-                try:
-                    client = self._clients[_id]
-                except KeyError:
-                    client = Client(_id)
-                    self._clients[_id] = client
-                self._current_client = client
+                self._current_client = self._server.get_client(_id)
             else:
                 self.sendnl(b"eUnknown packet code %c" % b)
 
