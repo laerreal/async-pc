@@ -17,6 +17,7 @@ class Client(object):
         for s in sms:
             # prevent duplication using raw SMS as hash
             self._all_sms[hash(s._raw)] = s
+        return self
 
     def __dfs_children__(self):
         return tuple(self._all_sms.values())
