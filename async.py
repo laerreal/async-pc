@@ -17,7 +17,7 @@ from androidsync import (
     Server,
     Session
 )
-from widgets import (
+from androidsync.widgets import (
     MainWindow
 )
 from threading import (
