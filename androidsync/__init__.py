@@ -5,7 +5,7 @@ from os.path import (
 
 import sys
 
-sys.path.insert(0, join(dirname(dirname(__file__)), join("deps")))
+sys.path.insert(0, join(dirname(dirname(__file__)), join("deps", "qdt")))
 
 from .calllog import *
 from .client import *

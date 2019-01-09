@@ -2,7 +2,7 @@ __all__ = [
     "Server"
 ]
 
-from qdt.common import (
+from common import (
     pythonize
 )
 from .client import (
