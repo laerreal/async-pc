@@ -3,10 +3,15 @@ __all__ = [
 ]
 
 from six.moves.tkinter import (
+    PhotoImage,
     Tk
 )
 from .server_view import (
     ServerView
+)
+from os.path import (
+    dirname,
+    join
 )
 
 
@@ -16,6 +21,12 @@ class MainWindow(Tk):
         Tk.__init__(self)
 
         self.title("Android Synchronizer")
+
+        try:
+            ico = PhotoImage(file = join(dirname(__file__), "logo.gif"))
+            self.tk.call("wm", "iconphoto", self._w, ico)
+        except Exception as e:
+            print("Failed to set icon: %s" % e)
 
         self._server = None
 
