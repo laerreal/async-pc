@@ -8,6 +8,9 @@ from six.moves.tkinter import (
 from six.moves.tkinter.ttk import  (
     Notebook
 )
+from .client_view import (
+    ClientView
+)
 
 
 class ServerView(Frame):
@@ -23,8 +26,20 @@ class ServerView(Frame):
         self._nb = nb = Notebook(self)
         nb.grid(row = 0, column = 0, sticky = "NESW")
 
-        self._sms_w = sms_w = Frame(nb)
-        nb.add(sms_w, text = "SMS")
+        self._clients2tabs = {}
 
-        self._calls_w = calls_w = Frame(nb)
-        nb.add(calls_w, text = "Calls")
+        self._update_tabs()
+
+    def _update_tabs(self):
+        nb = self._nb
+        rest = dict(self._srv._clients)
+
+        # remove tabs for removed clients
+        for tab_id in tuple(nb.tabs()):
+            c_id = nb.tab(tab_id, option = "text")
+            if rest.pop(c_id, None) is None:
+                self.nb.forget(tab_id)
+
+        for c_id, client in rest.items(): # new clients only left
+            c_view = ClientView(client, nb)
+            nb.add(c_view, text = c_id)
