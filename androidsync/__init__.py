@@ -7,6 +7,7 @@ import sys
 
 sys.path.insert(0, join(dirname(dirname(__file__)), join("deps")))
 
+from .calllog import *
 from .client import *
 from .server import *
 from .session import *

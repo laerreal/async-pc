@@ -5,6 +5,9 @@ __all__ = [
 from .sms import (
     SMS
 )
+from .calllog import (
+    Call
+)
 
 
 class Session(object):
@@ -55,6 +58,10 @@ class Session(object):
                 _id = p[1:-1].decode("utf-8")
                 self.sendnl(b"i")
                 self._current_client = self._server.get_client(_id)
+            elif b == ord("C"):
+                self.sendnl(b"c")
+                call = Call(p[1:-1])
+                self._current_client.add_calls(call)
             else:
                 self.sendnl(b"eUnknown packet code %c" % b)
 
