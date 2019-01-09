@@ -12,6 +12,9 @@ from six.moves.tkinter.ttk import (
 from .scrollbars import (
     add_scrollbars
 )
+from .sms_view import (
+    SMSWindow
+)
 
 
 class ClientView(Frame):
@@ -45,6 +48,8 @@ class ClientView(Frame):
 
         add_scrollbars(sms_w, sms_tv)
 
+        sms_tv.bind("<Double-1>", self._on_double_1)
+
         self._calls_w = calls_w = Frame(nb)
         nb.add(calls_w, text = "Calls")
 
@@ -64,5 +69,13 @@ class ClientView(Frame):
             sms_tv.insert("", "end",
                 text = str(i),
                 values = (sms["address"], sms.line),
-                tags = (_hash,)
+                tags = (str(_hash),)
             )
+
+    def _on_double_1(self, _):
+        item = self._sms_tv.selection()[0]
+        sms = self._client._all_sms[int(self._sms_tv.item(item, "tags")[0])]
+
+        SMSWindow(sms).geometry("500x600")
+
+
