@@ -2,7 +2,7 @@ __all__ = [
     "Client"
 ]
 
-from common import (
+from .common import (
     make_python_identifier
 )
 from itertools import (
