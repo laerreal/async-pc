@@ -1,4 +1,5 @@
 from .client_view import *
+from .conversation_view import *
 from .double_scrollbar_frame import *
 from .invalidate import *
 from .main_window import *
