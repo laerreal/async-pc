@@ -36,6 +36,14 @@ from pyrsp.utils import (
 STATE_FILE = "_session_state.py"
 
 
+def save_state(srv):
+    srv.save("_tmp" + STATE_FILE)
+
+    if isfile(STATE_FILE):
+        remove(STATE_FILE)
+    rename("_tmp" + STATE_FILE, STATE_FILE)
+
+
 def net_thread_func(srv):
     global working
 
@@ -63,11 +71,7 @@ def net_thread_func(srv):
 
         s.run();
 
-        srv.save("_tmp" + STATE_FILE)
-
-        if isfile(STATE_FILE):
-            remove(STATE_FILE)
-        rename("_tmp" + STATE_FILE, STATE_FILE)
+        save_state(srv)
 
         try: cs.close();
         except: pass
@@ -100,3 +104,5 @@ if __name__ == "__main__":
     root.mainloop()
 
     net_thread.join()
+
+    save_state(srv)
