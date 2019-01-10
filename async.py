@@ -44,8 +44,16 @@ def save_state(srv):
     rename("_tmp" + STATE_FILE, STATE_FILE)
 
 
+def save_state_async(srv):
+    t = Thread(target = save_state, args = (srv,))
+    t.start()
+    return t
+
+
 def net_thread_func(srv):
     global working
+
+    state_saver = None
 
     ss = socket(AF_INET, SOCK_STREAM)
     ss.settimeout(1.0)
@@ -71,11 +79,16 @@ def net_thread_func(srv):
 
         s.run();
 
-        save_state(srv)
+        if state_saver is not None:
+            state_saver.join()
+        print("Start state backing up...")
+        state_saver = save_state_async(srv)
 
         try: cs.close();
         except: pass
 
+    if state_saver is not None:
+        state_saver.join()
 
 if __name__ == "__main__":
     print("ASync PC (server) application")
