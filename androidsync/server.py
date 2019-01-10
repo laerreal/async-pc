@@ -2,7 +2,9 @@ __all__ = [
     "Server"
 ]
 
+# qdt.common
 from common import (
+    notifier,
     pythonize
 )
 from .client import (
@@ -13,6 +15,9 @@ from .storage import (
 )
 
 
+@notifier(
+    "new_client" # client
+)
 class Server(object):
 
     def __init__(self):
@@ -34,4 +39,5 @@ class Server(object):
         except KeyError:
             client = Client(_id)
             self._clients[_id] = client
+            self.__notify_new_client(client)
         return client
