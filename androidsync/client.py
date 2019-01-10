@@ -12,6 +12,9 @@ from .common import (
 from itertools import (
     chain
 )
+from collections import (
+    defaultdict
+)
 
 
 @notifier("sms_added")
@@ -61,3 +64,9 @@ class Client(object):
         g.write(g.nameof(self) + ".add_calls(*")
         g.pprint(tuple(self._all_calls.values()))
         g.line(")")
+
+    def get_conversations(self):
+        addresses = defaultdict(list)
+        for sms in self._all_sms.values():
+            addresses[sms["address"]].append(sms)
+        return addresses
