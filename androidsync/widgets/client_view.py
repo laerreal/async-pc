@@ -55,6 +55,8 @@ class ClientView(Frame):
 
         self._invalidate()
 
+        client.watch_sms_added(self._on_sms_added)
+
     def _update(self):
         sms_tv = self._sms_tv
 
@@ -86,3 +88,6 @@ class ClientView(Frame):
     def _after_update(self):
         del self._after_update_id
         self._update()
+
+    def _on_sms_added(self):
+        self._invalidate()
