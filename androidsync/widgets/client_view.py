@@ -15,9 +15,12 @@ from .scrollbars import (
 from .sms_view import (
     SMSWindow
 )
+from .invalidate import (
+    Invalidate
+)
 
 
-class ClientView(Frame):
+class ClientView(Frame, Invalidate):
 
     def __init__(self, client, *a, **kw):
         Frame.__init__(self, *a, **kw)
@@ -79,15 +82,6 @@ class ClientView(Frame):
         sms = self._client._all_sms[int(self._sms_tv.item(item, "tags")[0])]
 
         SMSWindow(sms).geometry("500x600")
-
-    def _invalidate(self):
-        if hasattr(self, "_after_update_id"):
-            return
-        self._after_update_id = self.after(100, self._after_update)
-
-    def _after_update(self):
-        del self._after_update_id
-        self._update()
 
     def _on_sms_added(self):
         self._invalidate()
