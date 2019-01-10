@@ -1,6 +1,6 @@
 [submodule "deps/qdt"]
 	path = deps/qdt
-	url = https://github.com/ispras/qdt.git
+	url = https://github.com/laerreal/qdt.git
 [submodule "deps/pyrsp"]
 	path = deps/pyrsp
 	url = https://github.com/stef/pyrsp.git
