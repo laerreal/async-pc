@@ -30,6 +30,8 @@ class ServerView(Frame):
 
         self._update_tabs()
 
+        server.watch_new_client(self._on_new_client)
+
     def _update_tabs(self):
         nb = self._nb
         rest = dict(self._srv._clients)
@@ -43,3 +45,6 @@ class ServerView(Frame):
         for c_id, client in rest.items(): # new clients only left
             c_view = ClientView(client, nb)
             nb.add(c_view, text = c_id)
+
+    def _on_new_client(self, *_):
+        self._update_tabs()
