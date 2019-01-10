@@ -20,7 +20,9 @@ class Server(object):
 
     def restore(self, file):
         s = Storage.load(file)
-        self._clients = {} if s.clients is None else s.clients
+        self._clients = {}
+        for c in s.clients:
+            self._clients[c._id] = c
 
     def save(self, file):
         s = Storage(clients = self._clients)

@@ -8,13 +8,18 @@ import androidsync
 class Storage(object):
 
     def __init__(self, clients = None):
-        self.clients = clients if clients else None
+        if isinstance(clients, dict): # old format
+            clients = tuple(clients.values())
+        elif not isinstance(clients, tuple):
+            clients = clients if clients else ()
+
+        self.clients = clients
 
     def __var_base__(self):
         return "storage"
 
     def __dfs_children__(self):
-        return tuple(self.clients.values())
+        return self.clients
 
     def __gen_code__(self, g):
         g.gen_code(self)
