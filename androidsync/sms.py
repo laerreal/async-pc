@@ -1,5 +1,8 @@
 __all__ = [
-    "SMS"
+    "SMS",
+
+    "MESSAGE_TYPE"
+    # MESSAGE_TYPE_* are exported programmically
 ]
 
 from json import (
@@ -11,6 +14,32 @@ from common import (
 from six import (
     PY3
 )
+from datetime import (
+    datetime
+)
+fromtimestamp = datetime.fromtimestamp
+
+# See:
+# https://developer.android.com/reference/kotlin/android/provider/Telephony.TextBasedSmsColumns
+
+# column name
+MESSAGE_TYPE = "type"
+
+TYPES = dict(
+    MESSAGE_TYPE_ALL = "0",
+    MESSAGE_TYPE_INBOX = "1",
+    MESSAGE_TYPE_SENT = "2",
+    MESSAGE_TYPE_DRAFT = "3",
+    MESSAGE_TYPE_OUTBOX = "4",
+    MESSAGE_TYPE_FAILED = "5",
+    MESSAGE_TYPE_QUEUED = "6"
+)
+
+for t, v in TYPES.items():
+    globals()[t] = v
+    __all__.append(t)
+
+TYPES.update(tuple((v, t) for t, v in TYPES.items()))
 
 
 class SMS(object):
@@ -21,6 +50,15 @@ class SMS(object):
             _raw = _raw.decode("charmap")
 
         self._raw = _raw;
+
+    @lazy
+    def datetime(self):
+        epoch_ms = int(self["date"])
+        return fromtimestamp(epoch_ms / 1000.0)
+
+    @lazy
+    def incoming(self):
+        return self["type"] == MESSAGE_TYPE_INBOX
 
     @lazy
     def message(self):
