@@ -13,6 +13,10 @@ from itertools import (
 class Client(object):
 
     def __init__(self, _id):
+        """
+:type _id: str
+:param _id: Human readable identifier of client.
+        """
         self._id = _id
         self._all_sms = {}
         self._all_calls = {}
