@@ -53,7 +53,7 @@ class ClientView(Frame):
         self._calls_w = calls_w = Frame(nb)
         nb.add(calls_w, text = "Calls")
 
-        self._update()
+        self._invalidate()
 
     def _update(self):
         sms_tv = self._sms_tv
@@ -78,4 +78,11 @@ class ClientView(Frame):
 
         SMSWindow(sms).geometry("500x600")
 
+    def _invalidate(self):
+        if hasattr(self, "_after_update_id"):
+            return
+        self._after_update_id = self.after(100, self._after_update)
 
+    def _after_update(self):
+        del self._after_update_id
+        self._update()
