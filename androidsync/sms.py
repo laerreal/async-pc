@@ -8,11 +8,18 @@ from json import (
 from common import (
     lazy
 )
+from six import (
+    PY3
+)
 
 
 class SMS(object):
 
     def __init__(self, _raw):
+        if PY3 and isinstance(_raw, bytes):
+            # this encoding is quite fast and supports all byte values [0;255]
+            _raw = _raw.decode("charmap")
+
         self._raw = _raw;
 
     @lazy
