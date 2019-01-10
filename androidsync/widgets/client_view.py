@@ -15,6 +15,9 @@ from .scrollbars import (
 from .sms_view import (
     SMSWindow
 )
+from .client_conversations_view import (
+    ClientConversationsView
+)
 from .invalidate import (
     Invalidate
 )
@@ -32,6 +35,9 @@ class ClientView(Frame, Invalidate):
 
         self._nb = nb = Notebook(self)
         nb.grid(row = 0, column = 0, sticky = "NESW")
+
+        self._convs_w = convs_w = ClientConversationsView(client, nb)
+        nb.add(convs_w, text = "Conversations")
 
         self._sms_w = sms_w = Frame(nb)
         nb.add(sms_w, text = "SMS")
