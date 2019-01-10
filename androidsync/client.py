@@ -2,6 +2,10 @@ __all__ = [
     "Client"
 ]
 
+# qdt.common
+from common import (
+    notifier
+)
 from .common import (
     make_python_identifier
 )
@@ -10,6 +14,7 @@ from itertools import (
 )
 
 
+@notifier("sms_added")
 class Client(object):
 
     def __init__(self, _id):
@@ -22,9 +27,19 @@ class Client(object):
         self._all_calls = {}
 
     def add_sms(self, *sms):
+        _all = self._all_sms
+        added = False
         for s in sms:
             # prevent duplication using raw SMS as hash
-            self._all_sms[hash(s._raw)] = s
+            h = hash(s._raw)
+            if h in _all:
+                continue
+            added = True
+            _all[h] = s
+
+        if added:
+            self.__notify_sms_added()
+
         return self
 
     def add_calls(self, *calls):
