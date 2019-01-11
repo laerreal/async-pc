@@ -17,6 +17,16 @@ from collections import (
 )
 
 
+def add_raw_unique(container, *items):
+    added = False
+    for i in items:
+        h = hash(i._raw)
+        if h not in container:
+            added = True
+            container[h] = i
+    return added
+
+
 @notifier("sms_added")
 class Client(object):
 
@@ -28,26 +38,20 @@ class Client(object):
         self._id = _id
         self._all_sms = {}
         self._all_calls = {}
+        self._contacts = {}
+        self._raw_contacts = {}
+        self._contacts_data = {}
+        self._mime_types = {}
 
     def add_sms(self, *sms):
-        _all = self._all_sms
-        added = False
-        for s in sms:
-            # prevent duplication using raw SMS as hash
-            h = hash(s._raw)
-            if h in _all:
-                continue
-            added = True
-            _all[h] = s
-
-        if added:
+        # prevent duplication using raw SMS as hash
+        if add_raw_unique(self._all_sms, *sms):
             self.__notify_sms_added()
 
         return self
 
     def add_calls(self, *calls):
-        for c in calls:
-            self._all_calls[hash(c._raw)] = c
+        add_raw_unique(self._all_calls, *calls)
         return self
 
     def __dfs_children__(self):
