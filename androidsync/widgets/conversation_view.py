@@ -55,6 +55,13 @@ class ConversationView(Frame):
             selectbackground = "SystemHighlight",
         )
 
+        # separator
+        text.tag_config("sep",
+            font = ("Arial", 1),
+            background = "#dddddd",
+            selectbackground = "SystemHighlight",
+        )
+
         for item in s_conv:
             prefix = "i" if item.incoming else "o"
 
@@ -62,7 +69,8 @@ class ConversationView(Frame):
                 item.datetime.strftime("%Y.%m.%d %H:%M:%S") + "\n",
                 prefix + "time"
             )
-            text.insert(END, item.message + "\n\n", prefix + "message")
+            text.insert(END, item.message + "\n", prefix + "message")
+            text.insert(END, "\n", "sep")
 
         text.config(state = DISABLED)
         text.see("end-1c")
