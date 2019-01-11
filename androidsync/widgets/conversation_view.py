@@ -31,20 +31,28 @@ class ConversationView(Frame):
         add_scrollbars(self, text)
 
         # incoming
-        text.tag_config("itime", foreground = "grey", background = "#eeeeee")
+        text.tag_config("itime",
+            foreground = "grey",
+            background = "#eeeeee",
+            selectbackground = "SystemHighlight",
+            selectforeground = "SystemHighlightText"
+        )
         text.tag_config("imessage",
             rmargin = 100
         )
 
         text.tag_config("otime",
-            foreground = "grey",
             justify = RIGHT,
-            background = "#eeeeee"
+            foreground = "grey",
+            background = "#eeeeee",
+            selectbackground = "SystemHighlight",
+            selectforeground = "SystemHighlightText"
         )
         text.tag_config("omessage",
             lmargin1 = 100,
             lmargin2 = 100,
-            background = "#f8f8f8"
+            background = "#f8f8f8",
+            selectbackground = "SystemHighlight",
         )
 
         for item in s_conv:
