@@ -12,6 +12,9 @@ from json import (
 from common import (
     lazy
 )
+from base64 import (
+    b64decode
+)
 
 
 class JSONOriginated(object):
@@ -28,7 +31,13 @@ class JSONOriginated(object):
         return loads(self._raw)
 
     def __getitem__(self, name):
-        return self.json[name]
+        val = self.json[name]
+        if (isinstance(val, dict)
+            and tuple(sorted(val.keys())) == ("data", "encoding")
+        ):
+            if val["encoding"] == "base64":
+                val = b64decode(val["data"]).decode("charmap")
+        return val
 
     def __str__(self):
         return str(self._raw)
