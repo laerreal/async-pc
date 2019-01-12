@@ -3,74 +3,80 @@ __all__ = [
 ]
 
 from six.moves.tkinter import (
+    Toplevel,
+    BOTH,
+    Label,
     Text,
-    RIGHT,
+    Entry,
     WORD,
     DISABLED,
     Frame,
     END
 )
-from .scrollbars import (
-    add_scrollbars
+from .double_scrollbar_frame import (
+    DoubleScrollbarFrame
+)
+from .text_helpers import (
+    adjust_text_height
 )
 
-class ConversationView(Frame):
+
+# TODO: this class is same as SMSView
+class ConversationView(DoubleScrollbarFrame):
 
     def __init__(self, conv, *a, **kw):
-        Frame.__init__(self, *a, **kw)
+        DoubleScrollbarFrame.__init__(self, *a, **kw)
+
+        self._inner = inner = Frame(self.canvas)
+        self._inner_id = self.canvas.create_window((0, 0),
+            window = inner, anchor = "nw"
+        )
+        inner.bind("<Configure>", self._on_inner_configure)
+        self.canvas.bind("<Configure>", self._on_configure)
+
+        inner.columnconfigure(0, weight = 1)
+        inner.rowconfigure(0, weight = 1)
+
+        self._next_row = 0
 
         self._conv = conv
+
         self._s_conv = s_conv = sorted(conv, key = lambda i : i["date"])
 
-        self.columnconfigure(0, weight = 1)
-        self.rowconfigure(0, weight = 1)
-
-        self._text = text = Text(self, wrap = WORD)
-        text.grid(row = 0, column = 0, sticky = "NESW")
-
-        add_scrollbars(self, text)
-
-        # incoming
-        text.tag_config("itime",
-            foreground = "grey",
-            background = "#eeeeee",
-            selectbackground = "SystemHighlight",
-            selectforeground = "SystemHighlightText"
-        )
-        text.tag_config("imessage",
-            rmargin = 100
-        )
-
-        text.tag_config("otime",
-            justify = RIGHT,
-            foreground = "grey",
-            background = "#eeeeee",
-            selectbackground = "SystemHighlight",
-            selectforeground = "SystemHighlightText"
-        )
-        text.tag_config("omessage",
-            lmargin1 = 100,
-            lmargin2 = 100,
-            background = "#f8f8f8",
-            selectbackground = "SystemHighlight",
-        )
-
-        # separator
-        text.tag_config("sep",
-            font = ("Arial", 1),
-            background = "#dddddd",
-            selectbackground = "SystemHighlight",
-        )
-
         for item in s_conv:
-            prefix = "i" if item.incoming else "o"
+            if item.incomming:
+                sticky = "NWS"
+            else:
+                sticky = "NES"
 
-            text.insert(END,
-                item.datetime.strftime("%Y.%m.%d %H:%M:%S") + "\n",
-                prefix + "time"
-            )
-            text.insert(END, item.message + "\n", prefix + "message")
-            text.insert(END, "\n", "sep")
+            e = self._append(Entry)
+            e.insert(END, item.datetime.strftime("%Y.%m.%d %H:%M:%S"))
+            e.config(state = "readonly")
+            e.grid(sticky = sticky)
 
-        text.config(state = DISABLED)
-        text.see("end-1c")
+            t = self._append(Text, wrap = WORD)
+            t.grid(sticky = "NESW")
+            t.insert(END, item.message)
+            t.config(state = DISABLED)
+
+    def _append(self, wcls, *a, **kw):
+        inner = self._inner
+
+        inner.rowconfigure(self._next_row, weight = 0)
+
+        w = wcls(inner, *a, **kw)
+        w.grid(row = self._next_row + 1, column = 0)
+
+        self._next_row += 1
+        return w
+
+    def _on_configure(self, e):
+        self.canvas.itemconfig(self._inner_id, width = e.width)
+
+        for w in self._inner.winfo_children():
+            if isinstance(w, Text):
+                adjust_text_height(w)
+
+    def _on_inner_configure(self, _):
+        '''Reset the scroll region to encompass the inner frame'''
+        self.canvas.configure(scrollregion = self.canvas.bbox("all"))
