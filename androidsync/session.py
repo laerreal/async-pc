@@ -8,6 +8,12 @@ from .sms import (
 from .calllog import (
     Call
 )
+from .contacts import (
+    Contact,
+    RAWContact,
+    ContactData,
+    MIMEType
+)
 
 
 class Session(object):
@@ -62,6 +68,27 @@ class Session(object):
                 self.sendnl(b"c")
                 call = Call(p[1:-1])
                 self._current_client.add_calls(call)
+            elif b == ord("P"):
+                try:
+                    k = p[1]
+                except IndexError:
+                    continue
+                cl = self._current_client
+                if k == ord("C"):
+                    contact = Contact(p[2:])
+                    cl.add_contacts(contact)
+                elif k == ord("R"):
+                    raw_contact = RAWContact(p[2:])
+                    cl.add_raw_contacts(raw_contact)
+                elif k == ord("D"):
+                    data = ContactData(p[2:])
+                    cl.add_contacts_data(data)
+                elif k == ord("M"):
+                    mime = MIMEType(p[2:])
+                    cl.add_mime_types(mime)
+                else:
+                    continue
+                self.sendnl(b"p")
             else:
                 self.sendnl(b"eUnknown packet code %c" % b)
 
